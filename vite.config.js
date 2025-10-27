@@ -9,7 +9,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/user", // Keep this to ensure assets are loaded from /user/ path
+  base: "/admin", // Keep this to ensure assets are loaded from /user/ path
   server: {
     port: 5174, // Secondary port (not directly accessed by users)
     proxy: {
