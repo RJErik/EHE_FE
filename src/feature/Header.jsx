@@ -19,13 +19,7 @@ const Header = ({ userName = "User" }) => {
         const path = location.pathname;
         switch (path) {
             case '/': return 'home';
-            case '/account': return 'account';
-            case '/portfolio': return 'portfolio';
-            case '/stock-market': return 'stockMarket';
-            case '/paper-trading': return 'paperTrading';
-            case '/alerts': return 'alerts';
-            case '/automatic-transactions': return 'automaticTransactions';
-            case '/watchlist': return 'watchlist';
+            case '/transaction': return 'transaction';
             default: return 'home';
         }
     };
@@ -35,13 +29,7 @@ const Header = ({ userName = "User" }) => {
     const handleNavigation = (page) => {
         const pathMap = {
             'home': '/',
-            'account': '/account',
-            'portfolio': '/portfolio',
-            'stockMarket': '/stock-market',
-            'paperTrading': '/paper-trading',
-            'alerts': '/alerts',
-            'automaticTransactions': '/automatic-transactions',
-            'watchlist': '/watchlist'
+            'transaction': '/transaction',
         };
 
         const path = pathMap[page] || '/';
@@ -73,58 +61,16 @@ const Header = ({ userName = "User" }) => {
                         <Button
                             variant="outline"
                             className={currentPage === 'home' ? 'bg-muted' : ''}
+                            onClick={() => handleNavigation("transaction")}
+                        >
+                            Transactions
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className={currentPage === 'home' ? 'bg-muted' : ''}
                             onClick={() => handleNavigation("home")}
                         >
                             Home
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'account' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("account")}
-                        >
-                            My Account
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'portfolio' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("portfolio")}
-                        >
-                            Portfolio
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'stockMarket' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("stockMarket")}
-                        >
-                            Stock Market
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'paperTrading' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("paperTrading")}
-                        >
-                            Paper Trading
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'alerts' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("alerts")}
-                        >
-                            Alerts
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'automaticTransactions' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("automaticTransactions")}
-                        >
-                            Automatic Transactions
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'watchlist' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("watchlist")}
-                        >
-                            Watchlist
                         </Button>
                         <Button
                             variant="outline"
