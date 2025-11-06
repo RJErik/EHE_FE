@@ -13,6 +13,7 @@ const SearchTransactions = () => {
 
     // Search parameters
     const [userId, setUserId] = useState("_any_");
+    const [portfolioId, setPortfolioId] = useState("_any_");  // ADD THIS
     const [searchPlatform, setSearchPlatform] = useState("_any_");
     const [searchSymbol, setSearchSymbol] = useState("_any_");
     const [fromTime, setFromTime] = useState("");
@@ -39,13 +40,14 @@ const SearchTransactions = () => {
 
         try {
             // If all fields are "any", fetch all items
-            if (userId === "_any_" && searchPlatform === "_any_" && searchSymbol === "_any_" &&
+            if (userId === "_any_" && portfolioId === "_any_" && searchPlatform === "_any_" && searchSymbol === "_any_" &&
                 !fromTime && !toTime && !fromAmount && !toAmount && !fromPrice && !toPrice &&
                 type === "_any_" && status === "_any_") {
                 await fetchTransactions();
             } else {
                 await searchTransactions(
                     userId,
+                    portfolioId,  // ADD THIS
                     searchPlatform,
                     searchSymbol,
                     fromTime,
@@ -65,6 +67,7 @@ const SearchTransactions = () => {
 
     const handleClear = () => {
         setUserId("_any_");
+        setPortfolioId("_any_");  // ADD THIS
         setSearchPlatform("_any_");
         setSearchSymbol("_any_");
         setFromTime("");
@@ -99,6 +102,18 @@ const SearchTransactions = () => {
                             placeholder="Enter user ID"
                             value={userId === "_any_" ? "" : userId}
                             onChange={(e) => setUserId(e.target.value || "_any_")}
+                            disabled={isSearching}
+                        />
+                    </div>
+
+                    {/* Portfolio ID */}
+                    <div>
+                        <p className="text-xs mb-1">Portfolio ID</p>
+                        <Input
+                            type="text"
+                            placeholder="Enter portfolio ID"
+                            value={portfolioId === "_any_" ? "" : portfolioId}
+                            onChange={(e) => setPortfolioId(e.target.value || "_any_")}
                             disabled={isSearching}
                         />
                     </div>

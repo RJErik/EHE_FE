@@ -24,6 +24,7 @@ export function TransactionProvider({ children }) {
     const lastSearchParamsRef = useRef({
         requestType: 'fetchAll',
         userId: '',
+        portfolioId: '',  // ADD THIS
         platform: '',
         symbol: '',
         fromTime: '',
@@ -48,6 +49,7 @@ export function TransactionProvider({ children }) {
         if (lastSearchParamsRef.current.requestType === 'search') {
             transactionData.searchTransactions(
                 lastSearchParamsRef.current.userId,
+                lastSearchParamsRef.current.portfolioId,  // ADD THIS
                 lastSearchParamsRef.current.platform,
                 lastSearchParamsRef.current.symbol,
                 lastSearchParamsRef.current.fromTime,
@@ -65,10 +67,11 @@ export function TransactionProvider({ children }) {
     }, [transactionData]);
 
     // Extended search function that stores the parameters
-    const searchTransactionsWithMemory = useCallback((userId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
+    const searchTransactionsWithMemory = useCallback((userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
         lastSearchParamsRef.current = {
             requestType: 'search',
             userId,
+            portfolioId,  // ADD THIS
             platform,
             symbol,
             fromTime,
@@ -80,7 +83,7 @@ export function TransactionProvider({ children }) {
             type,
             status
         };
-        return transactionData.searchTransactions(userId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status);
+        return transactionData.searchTransactions(userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status);
     }, [transactionData]);
 
     // Extended fetch function that stores it was a general fetch
@@ -88,6 +91,7 @@ export function TransactionProvider({ children }) {
         lastSearchParamsRef.current = {
             requestType: 'fetchAll',
             userId: '',
+            portfolioId: '',  // ADD THIS
             platform: '',
             symbol: '',
             fromTime: '',

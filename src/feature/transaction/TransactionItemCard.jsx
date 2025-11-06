@@ -1,10 +1,9 @@
 import { Card, CardContent } from "../../components/ui/card.jsx";
-import { Button } from "../../components/ui/button.jsx";
-import { Trash2, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator.jsx";
 import { cn } from "@/lib/utils.js";
 
-const TransactionItemCard = ({ transaction, onRemove }) => {
+const TransactionItemCard = ({ transaction }) => {
     const isBuy = transaction.transaction_type === "Buy";
     const isCompleted = transaction.status === "Completed";
     const isPending = transaction.status === "Pending";
@@ -33,15 +32,14 @@ const TransactionItemCard = ({ transaction, onRemove }) => {
                             User: {transaction.user_id}
                         </span>
                         <Separator className="h-4 w-px" orientation="vertical" />
+                        <span className="text-xs font-semibold bg-muted px-2 py-1 rounded">
+                            Portfolio: {transaction.portfolio_id}
+                        </span>
+                        <Separator className="h-4 w-px" orientation="vertical" />
                         <span className="text-sm font-medium">{transaction.platform}</span>
                         <Separator className="h-4 w-px" orientation="vertical" />
                         <span className="text-sm font-bold text-blue-600">{transaction.symbol}</span>
                     </div>
-                    {onRemove && (
-                        <Button variant="outline" size="icon" onClick={() => onRemove(transaction.id)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    )}
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
@@ -53,12 +51,12 @@ const TransactionItemCard = ({ transaction, onRemove }) => {
                         )}>
                             {isBuy ? (
                                 <>
-                                    <TrendingUp className="h-4 w-4 mr-1" />
+                                    <ArrowUp className="h-4 w-4 mr-1" />
                                     Buy
                                 </>
                             ) : (
                                 <>
-                                    <TrendingDown className="h-4 w-4 mr-1" />
+                                    <ArrowDown className="h-4 w-4 mr-1" />
                                     Sell
                                 </>
                             )}

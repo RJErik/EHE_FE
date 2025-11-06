@@ -1,5 +1,5 @@
-import SearchTransactions from "@/components/transaction/SearchTransactions.jsx";
-import TransactionsList from "@/components/transaction/TransactionsList.jsx";
+import SearchTransactions from "../feature/transaction/SearchTransactions.jsx";
+import TransactionsList from "../feature/transaction/TransactionList.jsx";
 import { TransactionProvider } from "../context/TransactionContext";
 
 const Transaction = () => {

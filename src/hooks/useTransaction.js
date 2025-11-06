@@ -82,12 +82,12 @@ export function useTransaction() {
     }, [toast, refreshToken]);
 
     // Search transactions
-    const searchTransactions = async (userId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
+    const searchTransactions = async (userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            console.log(`Searching transactions: userId=${userId} platform=${platform}, symbol=${symbol} fromTime=${fromTime} 
+            console.log(`Searching transactions: userId=${userId} portfolioId=${portfolioId} platform=${platform}, symbol=${symbol} fromTime=${fromTime} 
             toTime=${toTime} fromAmount=${fromAmount} toAmount=${toAmount} fromPrie=${fromPrice} toPrice=${toPrice} 
             type=${type}, status=${status}`);
 
@@ -99,6 +99,7 @@ export function useTransaction() {
                 },
                 body: JSON.stringify({
                     userId: userId === "_any_" ? "" : userId,
+                    portfolioId: portfolioId === "_any_" ? "" : portfolioId,  // ADD THIS
                     platform: platform === "_any_" ? "" : platform,
                     symbol: symbol === "_any_" ? "" : symbol,
                     fromTime: fromTime === "_any_" ? "" : fromTime,
@@ -130,6 +131,7 @@ export function useTransaction() {
                     },
                     body: JSON.stringify({
                         userId: userId === "_any_" ? "" : userId,
+                        portfolioId: portfolioId === "_any_" ? "" : portfolioId,  // ADD THIS
                         platform: platform === "_any_" ? "" : platform,
                         symbol: symbol === "_any_" ? "" : symbol,
                         fromTime: fromTime === "_any_" ? "" : fromTime,
