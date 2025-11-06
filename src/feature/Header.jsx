@@ -20,6 +20,7 @@ const Header = ({ userName = "User" }) => {
         switch (path) {
             case '/': return 'home';
             case '/transaction': return 'transaction';
+            case '/user': return 'user'
             default: return 'home';
         }
     };
@@ -30,6 +31,7 @@ const Header = ({ userName = "User" }) => {
         const pathMap = {
             'home': '/',
             'transaction': '/transaction',
+            'user': '/user'
         };
 
         const path = pathMap[page] || '/';
