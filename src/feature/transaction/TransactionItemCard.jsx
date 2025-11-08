@@ -2,6 +2,8 @@ import { Card, CardContent } from "../../components/ui/card.jsx";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator.jsx";
 import { cn } from "@/lib/utils.js";
+import binanceLogo from "../../assets/binance.png";
+import defaultPlatformLogo from "../../assets/default-platform.png";
 
 const TransactionItemCard = ({ transaction }) => {
     const isBuy = transaction.transaction_type === "Buy";
@@ -23,6 +25,21 @@ const TransactionItemCard = ({ transaction }) => {
         return date.toLocaleString();
     };
 
+    // Determine which logo to use based on platform
+    const getLogo = (platformName) => {
+        if (!platformName) return defaultPlatformLogo;
+
+        const platformLower = platformName.toLowerCase();
+
+        // Add more platform cases here if needed in the future
+        switch (platformLower) {
+            case 'binance':
+                return binanceLogo;
+            default:
+                return defaultPlatformLogo;
+        }
+    };
+
     return (
         <Card className="w-full">
             <CardContent className="p-4 space-y-3">
@@ -36,7 +53,14 @@ const TransactionItemCard = ({ transaction }) => {
                             Portfolio: {transaction.portfolio_id}
                         </span>
                         <Separator className="h-4 w-px" orientation="vertical" />
-                        <span className="text-sm font-medium">{transaction.platform}</span>
+                        <div className="flex items-center space-x-2">
+                            <img
+                                src={getLogo(transaction.platform)}
+                                alt={`${transaction.platform || 'Default'} logo`}
+                                className="h-6 w-6 object-contain"
+                            />
+                            <span className="text-sm font-medium">{transaction.platform}</span>
+                        </div>
                         <Separator className="h-4 w-px" orientation="vertical" />
                         <span className="text-sm font-bold text-blue-600">{transaction.symbol}</span>
                     </div>
