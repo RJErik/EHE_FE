@@ -3,7 +3,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { Card, CardContent, CardHeader } from "../../components/ui/card.jsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select.jsx";
 import { Input } from "../../components/ui/input.jsx";
-import { useTransaction } from "../../context/TransactionContext.jsx";
+import { useTransaction } from "../../context/TransactionsContext.jsx";
 import { useStockData } from "../../hooks/useStockData.js";
 import { Loader2, RefreshCw } from "lucide-react";
 
@@ -94,7 +94,7 @@ const SearchTransactions = () => {
                     <h3 className="text-lg">Search Filters</h3>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* User ID */}
+                    {/* Users ID */}
                     <div>
                         <p className="text-xs mb-1">User ID</p>
                         <Input

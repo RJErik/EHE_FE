@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { useTransaction as useTransactionHook } from '../hooks/useTransaction';
+import { useTransactions as useTransactionHook } from '../hooks/useTransactions.js';
 
 // Create the context
-const TransactionContext = createContext(null);
+const TransactionsContext = createContext(null);
 
 // Refresh interval options in milliseconds
 const REFRESH_INTERVALS = {
@@ -44,7 +44,7 @@ export function TransactionProvider({ children }) {
 
     // Create a method to refresh using the last search parameters
     const refreshLatestSearch = useCallback(() => {
-        console.log('[TransactionContext] Refreshing with last search:', lastSearchParamsRef.current);
+        console.log('[TransactionsContext] Refreshing with last search:', lastSearchParamsRef.current);
 
         if (lastSearchParamsRef.current.requestType === 'search') {
             transactionData.searchTransactions(
@@ -149,17 +149,17 @@ export function TransactionProvider({ children }) {
     };
 
     return (
-        <TransactionContext.Provider value={contextValue}>
+        <TransactionsContext.Provider value={contextValue}>
             {children}
-        </TransactionContext.Provider>
+        </TransactionsContext.Provider>
     );
 }
 
 // Custom hook to use the transaction context
 export function useTransaction() {
-    const context = useContext(TransactionContext);
+    const context = useContext(TransactionsContext);
     if (!context) {
-        throw new Error('useTransaction must be used within a TransactionProvider');
+        throw new Error('useTransactions must be used within a TransactionProvider');
     }
     return context;
 }

@@ -1,31 +1,31 @@
-import SearchTransactions from "../feature/transaction/SearchTransactions.jsx";
-import TransactionsList from "../feature/transaction/TransactionList.jsx";
-import { TransactionProvider } from "../context/TransactionContext";
+import SearchUsers from "../feature/user/SearchUsers.jsx";
+import UserList from "../feature/user/UserList.jsx";
+import { UserProvider } from "../context/UsersContext.jsx";
 
-const Transaction = () => {
+const Users = () => {
     return (
-        <TransactionProvider>
+        <UserProvider>
             <div className="min-h-screen flex flex-col">
                 <main className="flex-1 p-4">
-                    <h1 className="text-4xl font-semibold text-center mb-8">Transactions</h1>
+                    <h1 className="text-4xl font-semibold text-center mb-8">Users</h1>
 
                     <div className="container mx-auto">
                         <div className="flex flex-col lg:flex-row gap-6">
                             {/* Left section - Search and Settings */}
                             <div className="w-full lg:w-1/4">
-                                <SearchTransactions />
+                                <SearchUsers />
                             </div>
 
-                            {/* Right section - List of transactions */}
+                            {/* Right section - List of users */}
                             <div className="w-full lg:w-3/4">
-                                <TransactionsList />
+                                <UserList />
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
-        </TransactionProvider>
+        </UserProvider>
     );
 };
 
-export default Transaction;
+export default Users;

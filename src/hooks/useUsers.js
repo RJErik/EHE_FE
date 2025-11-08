@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useToast } from "./use-toast";
 import { useJwtRefresh } from "./useJwtRefresh";
 
-export function useUser() {
+export function useUsers() {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -229,7 +229,7 @@ export function useUser() {
             if (data.success) {
                 toast({
                     title: "Success",
-                    description: data.message || "User updated successfully",
+                    description: data.message || "Users updated successfully",
                     variant: "default",
                 });
                 // Refetch users to get updated data

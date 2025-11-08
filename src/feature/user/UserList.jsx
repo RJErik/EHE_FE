@@ -1,11 +1,11 @@
 import { Card, CardContent } from "../../components/ui/card.jsx";
-import { useUserContext } from "../../context/UserContext.jsx";
+import { useUserContext } from "../../context/UsersContext.jsx";
 import { Loader2 } from "lucide-react";
 import UserItemCard from "./UserItemCard.jsx";
-import EditUserDialog from "./EditUserDialog.jsx";
+import UpdateUserDialog from "./UpdateUserDialog.jsx";
 import { useState } from "react";
 
-const UsersList = () => {
+const UserList = () => {
     const { users, isLoading, error, lastUpdate } = useUserContext();
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -49,8 +49,8 @@ const UsersList = () => {
                 </CardContent>
             </Card>
 
-            {/* Edit User Dialog */}
-            <EditUserDialog
+            {/* Edit Users Dialog */}
+            <UpdateUserDialog
                 open={editDialogOpen}
                 onOpenChange={setEditDialogOpen}
                 user={selectedUser}
@@ -59,4 +59,4 @@ const UsersList = () => {
     );
 };
 
-export default UsersList;
+export default UserList;

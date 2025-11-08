@@ -16,10 +16,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../components/ui/select.jsx";
-import { useUserContext } from "../../context/UserContext.jsx";
+import { useUserContext } from "../../context/UsersContext.jsx";
 import { Loader2 } from "lucide-react";
 
-const EditUserDialog = ({ open, onOpenChange, user }) => {
+const UpdateUserDialog = ({ open, onOpenChange, user }) => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -77,7 +77,7 @@ const EditUserDialog = ({ open, onOpenChange, user }) => {
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    {/* User ID - Read only */}
+                    {/* Users ID - Read only */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium">User ID</label>
                         <Input
@@ -184,4 +184,4 @@ const EditUserDialog = ({ open, onOpenChange, user }) => {
     );
 };
 
-export default EditUserDialog;
+export default UpdateUserDialog;

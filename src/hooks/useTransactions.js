@@ -1,9 +1,9 @@
-// src/hooks/useTransaction.js
+// src/hooks/useTransactions.js
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "./use-toast";
 import { useJwtRefresh } from "./useJwtRefresh";
 
-export function useTransaction() {
+export function useTransactions() {
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);

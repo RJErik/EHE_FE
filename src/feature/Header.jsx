@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../components/ui/button.jsx";
-import { ModeToggle } from "@/feature/Mode-toggle.jsx";
+import { ModeToggle } from "@/feature/ModeToggle.jsx";
 import { Menubar } from "../components/ui/menubar.jsx";
 import LogoutDialog from "./LogoutDialog.jsx";
 import { useLogout } from "../hooks/useLogout.js";
@@ -19,8 +19,8 @@ const Header = ({ userName = "User" }) => {
         const path = location.pathname;
         switch (path) {
             case '/': return 'home';
-            case '/transaction': return 'transaction';
-            case '/user': return 'user'
+            case '/transactions': return 'transactions';
+            case '/users': return 'users'
             default: return 'home';
         }
     };
@@ -30,8 +30,8 @@ const Header = ({ userName = "User" }) => {
     const handleNavigation = (page) => {
         const pathMap = {
             'home': '/',
-            'transaction': '/transaction',
-            'user': '/user'
+            'transactions': '/transactions',
+            'users': '/users'
         };
 
         const path = pathMap[page] || '/';
@@ -62,8 +62,15 @@ const Header = ({ userName = "User" }) => {
                     <nav className="flex space-x-6">
                         <Button
                             variant="outline"
-                            className={currentPage === 'home' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("transaction")}
+                            className={currentPage === 'users' ? 'bg-muted' : ''}
+                            onClick={() => handleNavigation("users")}
+                        >
+                            Users
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className={currentPage === 'transactions' ? 'bg-muted' : ''}
+                            onClick={() => handleNavigation("transactions")}
                         >
                             Transactions
                         </Button>

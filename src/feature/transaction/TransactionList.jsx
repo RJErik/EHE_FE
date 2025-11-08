@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../../components/ui/card.jsx";
-import { useTransaction } from "../../context/TransactionContext.jsx";
+import { useTransaction } from "../../context/TransactionsContext.jsx";
 import { Loader2 } from "lucide-react";
 import TransactionItemCard from "./TransactionItemCard.jsx";
 import { useEffect, useRef } from "react";

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useCallback, useRef } from 'react';
-import { useUser as useUserHook } from '../hooks/useUser';
+import { useUsers as useUserHook } from '../hooks/useUsers.js';
 
 // Create the context
-const UserContext = createContext(null);
+const UsersContext = createContext(null);
 
 // Provider component
 export function UserProvider({ children }) {
@@ -27,7 +27,7 @@ export function UserProvider({ children }) {
 
     // Create a method to refresh using the last search parameters
     const refreshLatestSearch = useCallback(() => {
-        console.log('[UserContext] Refreshing with last search:', lastSearchParamsRef.current);
+        console.log('[UsersContext] Refreshing with last search:', lastSearchParamsRef.current);
 
         if (lastSearchParamsRef.current.requestType === 'search') {
             userData.searchUsers(
@@ -82,15 +82,15 @@ export function UserProvider({ children }) {
     };
 
     return (
-        <UserContext.Provider value={contextValue}>
+        <UsersContext.Provider value={contextValue}>
             {children}
-        </UserContext.Provider>
+        </UsersContext.Provider>
     );
 }
 
 // Custom hook to use the user context
 export function useUserContext() {
-    const context = useContext(UserContext);
+    const context = useContext(UsersContext);
     if (!context) {
         throw new Error('useUserContext must be used within a UserProvider');
     }
