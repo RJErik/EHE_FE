@@ -1,3 +1,4 @@
+// src/hooks/useUsers.js
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "./use-toast";
 import { useJwtRefresh } from "./useJwtRefresh";
@@ -6,17 +7,19 @@ export function useUsers() {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const { toast } = useToast();
     const { refreshToken } = useJwtRefresh();
 
-    // Fetch all users
-    const fetchUsers = useCallback(async () => {
+    const fetchUsers = useCallback(async (page = 0, size = pageSize) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            console.log("Fetching users...");
-            let response = await fetch("http://localhost:8080/api/admin/users", {
+            console.log(`Fetching users... page=${page}, size=${size}`);
+            let response = await fetch(`http://localhost:8080/api/admin/users?page=${page}&size=${size}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
@@ -24,7 +27,6 @@ export function useUsers() {
                 },
             });
 
-            // Handle 401 - Token expired
             if (response.status === 401) {
                 try {
                     await refreshToken();
@@ -32,8 +34,7 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                // Retry the original request
-                response = await fetch("http://localhost:8080/api/admin/users", {
+                response = await fetch(`http://localhost:8080/api/admin/users?page=${page}&size=${size}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
@@ -54,7 +55,9 @@ export function useUsers() {
             console.log("Users received:", data);
 
             if (data.success) {
-                setUsers(data.users || []);
+                setUsers(data.users?.content || []);
+                setCurrentPage(data.users?.number || 0);
+                setTotalPages(data.users?.totalPages || 1);
             } else {
                 toast({
                     title: "Error",
@@ -76,15 +79,14 @@ export function useUsers() {
         } finally {
             setIsLoading(false);
         }
-    }, [toast, refreshToken]);
+    }, [toast, refreshToken, pageSize]);
 
-    // Search users
-    const searchUsers = useCallback(async (userId, username, email, accountStatus, registrationDateFromTime, registrationDateToTime) => {
+    const searchUsers = useCallback(async (userId, username, email, accountStatus, registrationDateFromTime, registrationDateToTime, page = 0, size = pageSize) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            console.log(`Searching users: userId=${userId} username=${username} email=${email} accountStatus=${accountStatus} from=${registrationDateFromTime} to=${registrationDateToTime}`);
+            console.log(`Searching users: userId=${userId} username=${username} email=${email} accountStatus=${accountStatus} from=${registrationDateFromTime} to=${registrationDateToTime} page=${page} size=${size}`);
 
             let response = await fetch("http://localhost:8080/api/admin/users/search", {
                 method: "POST",
@@ -93,16 +95,17 @@ export function useUsers() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    userId: userId === "_any_" ? "" : userId,
-                    username: username === "_any_" ? "" : username,
-                    email: email === "_any_" ? "" : email,
-                    accountStatus: accountStatus === "_any_" ? "" : accountStatus,
-                    registrationDateFromTime: registrationDateFromTime === "_any_" ? "" : registrationDateFromTime,
-                    registrationDateToTime: registrationDateToTime === "_any_" ? "" : registrationDateToTime,
+                    userId: userId === "_any_" ? null : userId,
+                    userName: username === "_any_" ? null : username,
+                    email: email === "_any_" ? null : email,
+                    accountStatus: accountStatus === "_any_" ? null : accountStatus,
+                    registrationDateFrom: registrationDateFromTime === "_any_" ? null : registrationDateFromTime,
+                    registrationDateTo: registrationDateToTime === "_any_" ? null : registrationDateToTime,
+                    page: page,
+                    size: size
                 }),
             });
 
-            // Handle 401 - Token expired
             if (response.status === 401) {
                 try {
                     await refreshToken();
@@ -110,7 +113,6 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                // Retry the original request
                 response = await fetch("http://localhost:8080/api/admin/users/search", {
                     method: "POST",
                     credentials: "include",
@@ -118,12 +120,14 @@ export function useUsers() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        userId: userId === "_any_" ? "" : userId,
-                        username: username === "_any_" ? "" : username,
-                        email: email === "_any_" ? "" : email,
-                        accountStatus: accountStatus === "_any_" ? "" : accountStatus,
-                        registrationDateFromTime: registrationDateFromTime === "_any_" ? "" : registrationDateFromTime,
-                        registrationDateToTime: registrationDateToTime === "_any_" ? "" : registrationDateToTime,
+                        userId: userId === "_any_" ? null : userId,
+                        userName: username === "_any_" ? null : username,
+                        email: email === "_any_" ? null : email,
+                        accountStatus: accountStatus === "_any_" ? null : accountStatus,
+                        registrationDateFrom: registrationDateFromTime === "_any_" ? null : registrationDateFromTime,
+                        registrationDateTo: registrationDateToTime === "_any_" ? null : registrationDateToTime,
+                        page: page,
+                        size: size
                     }),
                 });
 
@@ -140,8 +144,10 @@ export function useUsers() {
             console.log("Search results:", data);
 
             if (data.success) {
-                setUsers(data.users || []);
-                return data.users || [];
+                setUsers(data.users?.content || []);
+                setCurrentPage(data.users?.number || 0);
+                setTotalPages(data.users?.totalPages || 1);
+                return data.users?.content || [];
             } else {
                 toast({
                     title: "Error",
@@ -165,9 +171,8 @@ export function useUsers() {
         } finally {
             setIsLoading(false);
         }
-    }, [toast, refreshToken]);
+    }, [toast, refreshToken, pageSize]);
 
-    // Update user
     const updateUser = useCallback(async (userId, username, email, password, accountStatus) => {
         setIsLoading(true);
         setError(null);
@@ -175,22 +180,20 @@ export function useUsers() {
         try {
             console.log(`Updating user: userId=${userId}`);
 
-            let response = await fetch("http://localhost:8080/api/admin/users/update", {
-                method: "POST",
+            let response = await fetch(`http://localhost:8080/api/admin/users/${userId}`, {
+                method: "PUT",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    userId,
-                    username: username || null,
+                    userName: username || null,
                     email: email || null,
                     password: password || null,
                     accountStatus: accountStatus || null,
                 }),
             });
 
-            // Handle 401 - Token expired
             if (response.status === 401) {
                 try {
                     await refreshToken();
@@ -198,16 +201,14 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                // Retry the original request
-                response = await fetch("http://localhost:8080/api/admin/users/update", {
-                    method: "POST",
+                response = await fetch(`http://localhost:8080/api/admin/users/${userId}`, {
+                    method: "PUT",
                     credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        userId,
-                        username: username || null,
+                        userName: username || null,
                         email: email || null,
                         password: password || null,
                         accountStatus: accountStatus || null,
@@ -232,8 +233,6 @@ export function useUsers() {
                     description: data.message || "Users updated successfully",
                     variant: "default",
                 });
-                // Refetch users to get updated data
-                await fetchUsers();
                 return data.user;
             } else {
                 toast({
@@ -258,18 +257,21 @@ export function useUsers() {
         } finally {
             setIsLoading(false);
         }
-    }, [toast, refreshToken, fetchUsers]);
+    }, [toast, refreshToken]);
 
-    // Initial fetch
     useEffect(() => {
         console.log("Initial users fetch...");
-        fetchUsers();
-    }, [fetchUsers]);
+        fetchUsers(0, pageSize);
+    }, [fetchUsers, pageSize]);
 
     return {
         users,
         isLoading,
         error,
+        currentPage,
+        totalPages,
+        pageSize,
+        setPageSize,
         fetchUsers,
         searchUsers,
         updateUser,

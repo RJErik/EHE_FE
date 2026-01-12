@@ -10,7 +10,7 @@ import {UserProvider} from "@/context/UsersContext.jsx";
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/admin">
             <TransactionProvider>
                 <UserProvider>
                     <div className="flex flex-col min-h-screen">

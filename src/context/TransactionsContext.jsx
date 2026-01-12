@@ -24,7 +24,7 @@ export function TransactionProvider({ children }) {
     const lastSearchParamsRef = useRef({
         requestType: 'fetchAll',
         userId: '',
-        portfolioId: '',  // ADD THIS
+        portfolioId: '',
         platform: '',
         symbol: '',
         fromTime: '',
@@ -34,7 +34,9 @@ export function TransactionProvider({ children }) {
         fromPrice: '',
         toPrice: '',
         type: '',
-        status: ''
+        status: '',
+        page: 0, // 0-based
+        size: 10
     });
 
     // Force a re-render when transactions change
@@ -49,7 +51,7 @@ export function TransactionProvider({ children }) {
         if (lastSearchParamsRef.current.requestType === 'search') {
             transactionData.searchTransactions(
                 lastSearchParamsRef.current.userId,
-                lastSearchParamsRef.current.portfolioId,  // ADD THIS
+                lastSearchParamsRef.current.portfolioId,
                 lastSearchParamsRef.current.platform,
                 lastSearchParamsRef.current.symbol,
                 lastSearchParamsRef.current.fromTime,
@@ -59,19 +61,24 @@ export function TransactionProvider({ children }) {
                 lastSearchParamsRef.current.fromPrice,
                 lastSearchParamsRef.current.toPrice,
                 lastSearchParamsRef.current.type,
-                lastSearchParamsRef.current.status
+                lastSearchParamsRef.current.status,
+                lastSearchParamsRef.current.page,
+                lastSearchParamsRef.current.size
             );
         } else {
-            transactionData.fetchTransactions();
+            transactionData.fetchTransactions(
+                lastSearchParamsRef.current.page,
+                lastSearchParamsRef.current.size
+            );
         }
     }, [transactionData]);
 
-    // Extended search function that stores the parameters
+    // Extended search function that stores the parameters and resets to page 0
     const searchTransactionsWithMemory = useCallback((userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
         lastSearchParamsRef.current = {
             requestType: 'search',
             userId,
-            portfolioId,  // ADD THIS
+            portfolioId,
             platform,
             symbol,
             fromTime,
@@ -81,17 +88,19 @@ export function TransactionProvider({ children }) {
             fromPrice,
             toPrice,
             type,
-            status
+            status,
+            page: 0, // Always start at page 0 for new search
+            size: transactionData.pageSize
         };
-        return transactionData.searchTransactions(userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status);
+        return transactionData.searchTransactions(userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status, 0, transactionData.pageSize);
     }, [transactionData]);
 
-    // Extended fetch function that stores it was a general fetch
+    // Extended fetch function that stores it was a general fetch and resets to page 0
     const fetchTransactionsWithMemory = useCallback(() => {
         lastSearchParamsRef.current = {
             requestType: 'fetchAll',
             userId: '',
-            portfolioId: '',  // ADD THIS
+            portfolioId: '',
             platform: '',
             symbol: '',
             fromTime: '',
@@ -101,9 +110,75 @@ export function TransactionProvider({ children }) {
             fromPrice: '',
             toPrice: '',
             type: '',
-            status: ''
+            status: '',
+            page: 0, // Always start at page 0
+            size: transactionData.pageSize
         };
-        return transactionData.fetchTransactions();
+        return transactionData.fetchTransactions(0, transactionData.pageSize);
+    }, [transactionData]);
+
+    // Navigate to a specific page (0-based internally)
+    const goToPage = useCallback((page) => {
+        // Ensure page is within bounds (0-based)
+        const validPage = Math.max(0, Math.min(page, transactionData.totalPages - 1));
+
+        lastSearchParamsRef.current.page = validPage;
+
+        if (lastSearchParamsRef.current.requestType === 'search') {
+            transactionData.searchTransactions(
+                lastSearchParamsRef.current.userId,
+                lastSearchParamsRef.current.portfolioId,
+                lastSearchParamsRef.current.platform,
+                lastSearchParamsRef.current.symbol,
+                lastSearchParamsRef.current.fromTime,
+                lastSearchParamsRef.current.toTime,
+                lastSearchParamsRef.current.fromAmount,
+                lastSearchParamsRef.current.toAmount,
+                lastSearchParamsRef.current.fromPrice,
+                lastSearchParamsRef.current.toPrice,
+                lastSearchParamsRef.current.type,
+                lastSearchParamsRef.current.status,
+                validPage,
+                transactionData.pageSize
+            );
+        } else {
+            transactionData.fetchTransactions(validPage, transactionData.pageSize);
+        }
+    }, [transactionData]);
+
+    // Change page size and calculate which page to show
+    const changePageSize = useCallback((newSize) => {
+        // Calculate the first item's absolute index in the current view
+        const currentFirstItemIndex = transactionData.currentPage * transactionData.pageSize;
+        // Calculate which page this item would be on with the new size
+        const newPage = Math.floor(currentFirstItemIndex / newSize);
+        // Ensure the page is valid (0-based)
+        const validPage = Math.max(0, newPage);
+
+        transactionData.setPageSize(newSize);
+        lastSearchParamsRef.current.size = newSize;
+        lastSearchParamsRef.current.page = validPage;
+
+        if (lastSearchParamsRef.current.requestType === 'search') {
+            transactionData.searchTransactions(
+                lastSearchParamsRef.current.userId,
+                lastSearchParamsRef.current.portfolioId,
+                lastSearchParamsRef.current.platform,
+                lastSearchParamsRef.current.symbol,
+                lastSearchParamsRef.current.fromTime,
+                lastSearchParamsRef.current.toTime,
+                lastSearchParamsRef.current.fromAmount,
+                lastSearchParamsRef.current.toAmount,
+                lastSearchParamsRef.current.fromPrice,
+                lastSearchParamsRef.current.toPrice,
+                lastSearchParamsRef.current.type,
+                lastSearchParamsRef.current.status,
+                validPage,
+                newSize
+            );
+        } else {
+            transactionData.fetchTransactions(validPage, newSize);
+        }
     }, [transactionData]);
 
     // Handle refresh interval changes
@@ -143,6 +218,8 @@ export function TransactionProvider({ children }) {
         searchTransactions: searchTransactionsWithMemory,
         fetchTransactions: fetchTransactionsWithMemory,
         refreshLatestSearch,
+        goToPage,
+        changePageSize,
         refreshInterval,
         updateRefreshInterval,
         refreshIntervalOptions: Object.keys(REFRESH_INTERVALS)

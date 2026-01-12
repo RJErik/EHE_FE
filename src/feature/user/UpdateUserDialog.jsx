@@ -26,7 +26,7 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
     const [accountStatus, setAccountStatus] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const { updateUser, isLoading } = useUserContext();
+    const { updateUser, refreshLatestSearch, isLoading } = useUserContext();
 
     // Populate form when user changes
     useEffect(() => {
@@ -53,6 +53,8 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
             );
 
             if (result) {
+                // Refresh the current page to show updated data
+                await refreshLatestSearch();
                 onOpenChange(false);
             }
         } finally {

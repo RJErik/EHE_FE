@@ -7,17 +7,19 @@ export function useTransactions() {
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const { toast } = useToast();
     const { refreshToken } = useJwtRefresh();
 
-    // Fetch all transactions
-    const fetchTransactions = useCallback(async () => {
+    const fetchTransactions = useCallback(async (page = 0, size = pageSize) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            console.log("Fetching transactions...");
-            let response = await fetch("http://localhost:8080/api/admin/transactions", {
+            console.log(`Fetching transactions... page=${page}, size=${size}`);
+            let response = await fetch(`http://localhost:8080/api/admin/transactions?page=${page}&size=${size}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
@@ -25,17 +27,14 @@ export function useTransactions() {
                 },
             });
 
-            // Handle 401 - Token expired
             if (response.status === 401) {
                 try {
                     await refreshToken();
                 } catch (refreshError) {
-                    // Refresh failed - redirects to login automatically
                     throw new Error("Session expired. Please login again.");
                 }
 
-                // Retry the original request
-                response = await fetch("http://localhost:8080/api/admin/transactions", {
+                response = await fetch(`http://localhost:8080/api/admin/transactions?page=${page}&size=${size}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
@@ -43,7 +42,6 @@ export function useTransactions() {
                     },
                 });
 
-                // If still 401 after refresh, session is truly expired
                 if (response.status === 401) {
                     throw new Error("Session expired. Please login again.");
                 }
@@ -57,7 +55,9 @@ export function useTransactions() {
             console.log("Transactions received:", data);
 
             if (data.success) {
-                setTransactions(data.transactions || []);
+                setTransactions(data.transactions?.content || []);
+                setCurrentPage(data.transactions?.number || 0);
+                setTotalPages(data.transactions?.totalPages || 1);
             } else {
                 toast({
                     title: "Error",
@@ -79,73 +79,54 @@ export function useTransactions() {
         } finally {
             setIsLoading(false);
         }
-    }, [toast, refreshToken]);
+    }, [toast, refreshToken, pageSize]);
 
-    // Search transactions
-    const searchTransactions = async (userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status) => {
+    const searchTransactions = async (userId, portfolioId, platform, symbol, fromTime, toTime, fromAmount, toAmount, fromPrice, toPrice, type, status, page = 0, size = pageSize) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            console.log(`Searching transactions: userId=${userId} portfolioId=${portfolioId} platform=${platform}, symbol=${symbol} fromTime=${fromTime} 
-            toTime=${toTime} fromAmount=${fromAmount} toAmount=${toAmount} fromPrie=${fromPrice} toPrice=${toPrice} 
-            type=${type}, status=${status}`);
+            console.log(`Searching transactions: userId=${userId} portfolioId=${portfolioId} platform=${platform}, symbol=${symbol}, page=${page}, size=${size}`);
 
-            let response = await fetch("http://localhost:8080/api/admin/transactions/search", {
-                method: "POST",
+            const params = new URLSearchParams();
+            if (userId && userId !== "_any_") params.append("userId", userId);
+            if (portfolioId && portfolioId !== "_any_") params.append("portfolioId", portfolioId);
+            if (platform && platform !== "_any_") params.append("platform", platform);
+            if (symbol && symbol !== "_any_") params.append("symbol", symbol);
+            if (fromTime && fromTime !== "_any_") params.append("fromTime", fromTime);
+            if (toTime && toTime !== "_any_") params.append("toTime", toTime);
+            if (fromAmount && fromAmount !== "_any_") params.append("fromAmount", fromAmount);
+            if (toAmount && toAmount !== "_any_") params.append("toAmount", toAmount);
+            if (fromPrice && fromPrice !== "_any_") params.append("fromPrice", fromPrice);
+            if (toPrice && toPrice !== "_any_") params.append("toPrice", toPrice);
+            if (type && type !== "_any_") params.append("type", type);
+            if (status && status !== "_any_") params.append("status", status);
+            params.append("page", page);
+            params.append("size", size);
+
+            let response = await fetch(`http://localhost:8080/api/admin/transactions/search?${params.toString()}`, {
+                method: "GET",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    userId: userId === "_any_" ? "" : userId,
-                    portfolioId: portfolioId === "_any_" ? "" : portfolioId,  // ADD THIS
-                    platform: platform === "_any_" ? "" : platform,
-                    symbol: symbol === "_any_" ? "" : symbol,
-                    fromTime: fromTime === "_any_" ? "" : fromTime,
-                    toTime: toTime === "_any_" ? "" : toTime,
-                    fromAmount: fromAmount === "_any_" ? "" : fromAmount,
-                    toAmount: toAmount === "_any_" ? "" : toAmount,
-                    fromPrice: fromPrice === "_any_" ? "" : fromPrice,
-                    toPrice: toPrice === "_any_" ? "" : toPrice,
-                    type: type === "_any_" ? "" : type,
-                    status: status === "_any_" ? "" : status
-                }),
             });
 
-            // Handle 401 - Token expired
             if (response.status === 401) {
                 try {
                     await refreshToken();
                 } catch (refreshError) {
-                    // Refresh failed - redirects to login automatically
                     throw new Error("Session expired. Please login again.");
                 }
 
-                // Retry the original request
-                response = await fetch("http://localhost:8080/api/admin/transactions/search", {
-                    method: "POST",
+                response = await fetch(`http://localhost:8080/api/admin/transactions/search?${params.toString()}`, {
+                    method: "GET",
                     credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        userId: userId === "_any_" ? "" : userId,
-                        portfolioId: portfolioId === "_any_" ? "" : portfolioId,  // ADD THIS
-                        platform: platform === "_any_" ? "" : platform,
-                        symbol: symbol === "_any_" ? "" : symbol,
-                        fromTime: fromTime === "_any_" ? "" : fromTime,
-                        toTime: toTime === "_any_" ? "" : toTime,
-                        fromAmount: fromAmount === "_any_" ? "" : fromAmount,
-                        toAmount: toAmount === "_any_" ? "" : toAmount,
-                        fromPrice: fromPrice === "_any_" ? "" : fromPrice,
-                        toPrice: toPrice === "_any_" ? "" : toPrice,
-                        type: type === "_any_" ? "" : type,
-                        status: status === "_any_" ? "" : status
-                    }),
                 });
 
-                // If still 401 after refresh, session is truly expired
                 if (response.status === 401) {
                     throw new Error("Session expired. Please login again.");
                 }
@@ -159,8 +140,10 @@ export function useTransactions() {
             console.log("Search results:", data);
 
             if (data.success) {
-                setTransactions(data.transactions || []);
-                return data.transactions || [];
+                setTransactions(data.transactions?.content || []);
+                setCurrentPage(data.transactions?.number || 0);
+                setTotalPages(data.transactions?.totalPages || 1);
+                return data.transactions?.content || [];
             } else {
                 toast({
                     title: "Error",
@@ -186,16 +169,19 @@ export function useTransactions() {
         }
     };
 
-    // Initial fetch
     useEffect(() => {
         console.log("Initial transactions fetch...");
-        fetchTransactions();
-    }, [fetchTransactions]);
+        fetchTransactions(0, pageSize);
+    }, [fetchTransactions, pageSize]);
 
     return {
         transactions,
         isLoading,
         error,
+        currentPage,
+        totalPages,
+        pageSize,
+        setPageSize,
         fetchTransactions,
         searchTransactions
     };
