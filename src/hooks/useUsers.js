@@ -55,9 +55,11 @@ export function useUsers() {
             console.log("Users received:", data);
 
             if (data.success) {
-                setUsers(data.users?.content || []);
-                setCurrentPage(data.users?.number || 0);
-                setTotalPages(data.users?.totalPages || 1);
+                if (data.success) {
+                    setUsers(data.users?.items || []);
+                    setCurrentPage(data.users?.currentPage || 0);
+                    setTotalPages(data.users?.totalPages || 1);
+                }
             } else {
                 toast({
                     title: "Error",
@@ -144,10 +146,10 @@ export function useUsers() {
             console.log("Search results:", data);
 
             if (data.success) {
-                setUsers(data.users?.content || []);
-                setCurrentPage(data.users?.number || 0);
+                setUsers(data.users?.items || []);
+                setCurrentPage(data.users?.currentPage || 0);
                 setTotalPages(data.users?.totalPages || 1);
-                return data.users?.content || [];
+                return data.users?.items || [];
             } else {
                 toast({
                     title: "Error",
@@ -258,11 +260,6 @@ export function useUsers() {
             setIsLoading(false);
         }
     }, [toast, refreshToken]);
-
-    useEffect(() => {
-        console.log("Initial users fetch...");
-        fetchUsers(0, pageSize);
-    }, [fetchUsers, pageSize]);
 
     return {
         users,

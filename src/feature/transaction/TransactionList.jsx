@@ -146,7 +146,7 @@ const TransactionsList = () => {
                             <div className="space-y-3">
                                 {transactions.map((transaction) => (
                                     <TransactionItemCard
-                                        key={`transaction-${transaction.id}-${lastUpdate}`}
+                                        key={`transaction-${transaction.transactionId}-${lastUpdate}`}
                                         transaction={transaction}
                                     />
                                 ))}

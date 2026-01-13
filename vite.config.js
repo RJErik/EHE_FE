@@ -9,9 +9,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/admin", // Keep this to ensure assets are loaded from /user/ path
+  base: "/admin",
   server: {
-    port: 5174, // Secondary port (not directly accessed by users)
+    port: 5175,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

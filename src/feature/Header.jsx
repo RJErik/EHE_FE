@@ -62,6 +62,13 @@ const Header = () => {
                     <nav className="flex space-x-6">
                         <Button
                             variant="outline"
+                            className={currentPage === 'home' ? 'bg-muted' : ''}
+                            onClick={() => handleNavigation("home")}
+                        >
+                            Home
+                        </Button>
+                        <Button
+                            variant="outline"
                             className={currentPage === 'users' ? 'bg-muted' : ''}
                             onClick={() => handleNavigation("users")}
                         >
@@ -73,13 +80,6 @@ const Header = () => {
                             onClick={() => handleNavigation("transactions")}
                         >
                             Transactions
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className={currentPage === 'home' ? 'bg-muted' : ''}
-                            onClick={() => handleNavigation("home")}
-                        >
-                            Home
                         </Button>
                         <Button
                             variant="outline"

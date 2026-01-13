@@ -142,7 +142,7 @@ const UserList = () => {
                                 <div className="space-y-3">
                                     {users.map((user) => (
                                         <UserItemCard
-                                            key={`user-${user.user_id}-${lastUpdate}`}
+                                            key={`user-${user.id}-${lastUpdate}`}
                                             user={user}
                                             onEditClick={handleEditClick}
                                         />

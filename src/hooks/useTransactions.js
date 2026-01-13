@@ -55,9 +55,10 @@ export function useTransactions() {
             console.log("Transactions received:", data);
 
             if (data.success) {
-                setTransactions(data.transactions?.content || []);
-                setCurrentPage(data.transactions?.number || 0);
+                setTransactions(data.transactions?.items || []);
+                setCurrentPage(data.transactions?.currentPage || 0);
                 setTotalPages(data.transactions?.totalPages || 1);
+
             } else {
                 toast({
                     title: "Error",
@@ -140,10 +141,10 @@ export function useTransactions() {
             console.log("Search results:", data);
 
             if (data.success) {
-                setTransactions(data.transactions?.content || []);
-                setCurrentPage(data.transactions?.number || 0);
+                setTransactions(data.transactions?.items || []);
+                setCurrentPage(data.transactions?.currentPage || 0);
                 setTotalPages(data.transactions?.totalPages || 1);
-                return data.transactions?.content || [];
+                return data.transactions?.items || [];
             } else {
                 toast({
                     title: "Error",
@@ -168,11 +169,6 @@ export function useTransactions() {
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        console.log("Initial transactions fetch...");
-        fetchTransactions(0, pageSize);
-    }, [fetchTransactions, pageSize]);
 
     return {
         transactions,

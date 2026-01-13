@@ -7,17 +7,17 @@ import alpacaLogo from "../../assets/alpaca.png";
 import defaultPlatformLogo from "../../assets/default-platform.png";
 
 const TransactionItemCard = ({ transaction }) => {
-    const isBuy = transaction.transaction_type === "Buy";
-    const isCompleted = transaction.status === "Completed";
-    const isPending = transaction.status === "Pending";
-    const isFailed = transaction.status === "Failed";
+    const isBuy = transaction.type === "BUY";
+    const isCompleted = transaction.status === "COMPLETED";
+    const isPending = transaction.status === "PENDING";
+    const isFailed = transaction.status === "FAILED";
 
     const formatPrice = (price) => {
         return typeof price === 'number' ? `$${price.toFixed(2)}` : price;
     };
 
-    const formatAmount = (amount) => {
-        return typeof amount === 'number' ? amount.toFixed(4) : amount;
+    const formatQuantity = (quantity) => {
+        return typeof quantity === 'number' ? quantity.toFixed(4) : quantity;
     };
 
     const formatTime = (time) => {
@@ -32,7 +32,6 @@ const TransactionItemCard = ({ transaction }) => {
 
         const platformLower = platformName.toLowerCase();
 
-        // Add more platform cases here if needed in the future
         switch (platformLower) {
             case 'binance':
                 return binanceLogo;
@@ -49,11 +48,11 @@ const TransactionItemCard = ({ transaction }) => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 flex-wrap">
                         <span className="text-xs font-semibold bg-muted px-2 py-1 rounded">
-                            User: {transaction.user_id}
+                            User: {transaction.userId}
                         </span>
                         <Separator className="h-4 w-px" orientation="vertical" />
                         <span className="text-xs font-semibold bg-muted px-2 py-1 rounded">
-                            Portfolio: {transaction.portfolio_id}
+                            Portfolio: {transaction.portfolioId}
                         </span>
                         <Separator className="h-4 w-px" orientation="vertical" />
                         <div className="flex items-center space-x-2">
@@ -65,7 +64,7 @@ const TransactionItemCard = ({ transaction }) => {
                             <span className="text-sm font-medium">{transaction.platform}</span>
                         </div>
                         <Separator className="h-4 w-px" orientation="vertical" />
-                        <span className="text-sm font-bold text-blue-600">{transaction.symbol}</span>
+                        <span className="text-sm font-bold">{transaction.symbol}</span>
                     </div>
                 </div>
 
@@ -101,8 +100,8 @@ const TransactionItemCard = ({ transaction }) => {
                     </div>
 
                     <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Amount</p>
-                        <p className="font-semibold">{formatAmount(transaction.amount)}</p>
+                        <p className="text-xs text-muted-foreground">Quantity</p>
+                        <p className="font-semibold">{formatQuantity(transaction.quantity)}</p>
                     </div>
 
                     <div className="space-y-1">
@@ -110,9 +109,14 @@ const TransactionItemCard = ({ transaction }) => {
                         <p className="font-semibold">{formatPrice(transaction.price)}</p>
                     </div>
 
-                    <div className="md:col-span-4 space-y-1">
-                        <p className="text-xs text-muted-foreground">Transaction Time</p>
-                        <p className="font-mono text-xs">{formatTime(transaction.transaction_time)}</p>
+                    <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">Total Value</p>
+                        <p className="font-semibold">{formatPrice(transaction.totalValue)}</p>
+                    </div>
+
+                    <div className="md:col-span-3 space-y-1">
+                        <p className="text-xs text-muted-foreground">Transaction Date</p>
+                        <p className="font-mono text-xs">{formatTime(transaction.transactionDate)}</p>
                     </div>
                 </div>
             </CardContent>

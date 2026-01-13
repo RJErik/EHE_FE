@@ -4,9 +4,9 @@ import { Button } from "../../components/ui/button.jsx";
 import { cn } from "@/lib/utils.js";
 
 const UserItemCard = ({ user, onEditClick }) => {
-    const isActive = user.account_status === "ACTIVE";
-    const isSuspended = user.account_status === "SUSPENDED";
-    const isNonverified = user.account_status === "NONVERIFIED";
+    const isActive = user.accountStatus === "ACTIVE";
+    const isSuspended = user.accountStatus === "SUSPENDED";
+    const isNonverified = user.accountStatus === "NONVERIFIED";
 
     const formatDate = (date) => {
         if (!date) return '-';
@@ -28,9 +28,9 @@ const UserItemCard = ({ user, onEditClick }) => {
                     <div className="space-y-2 flex-1">
                         <div className="flex items-center space-x-2 flex-wrap">
                             <span className="text-xs font-semibold bg-muted px-2 py-1 rounded">
-                                ID: {user.user_id}
+                                ID: {user.id}
                             </span>
-                            <span className="text-sm font-bold text-blue-600">{user.user_name}</span>
+                            <span className="text-sm font-bold">{user.userName}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
@@ -49,13 +49,13 @@ const UserItemCard = ({ user, onEditClick }) => {
                     <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Status</p>
                         <p className={cn("font-semibold", getStatusColor())}>
-                            {user.account_status}
+                            {user.accountStatus}
                         </p>
                     </div>
 
                     <div className="space-y-1 md:col-span-2">
                         <p className="text-xs text-muted-foreground">Registered</p>
-                        <p className="font-mono text-xs">{formatDate(user.registration_date)}</p>
+                        <p className="font-mono text-xs">{formatDate(user.registrationDate)}</p>
                     </div>
                 </div>
             </CardContent>

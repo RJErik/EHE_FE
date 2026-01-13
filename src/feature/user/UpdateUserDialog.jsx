@@ -23,7 +23,7 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [accountStatus, setAccountStatus] = useState("");
+    const [accountStatus, setAccountStatus] = useState("ACTIVE");
     const [isUpdating, setIsUpdating] = useState(false);
 
     const { updateUser, refreshLatestSearch, isLoading } = useUserContext();
@@ -31,10 +31,10 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
     // Populate form when user changes
     useEffect(() => {
         if (user) {
-            setUsername(user.user_name || "");
+            setUsername(user.userName || "");
             setEmail(user.email || "");
             setPassword("");
-            setAccountStatus(user.account_status || "");
+            setAccountStatus(user.accountStatus || "ACTIVE");
         }
     }, [user, open]);
 
@@ -45,11 +45,11 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
         try {
             // Only send fields that have changed or are not empty
             const result = await updateUser(
-                user.user_id,
-                username !== user.user_name ? username : "",
+                user.id,
+                username !== user.userName ? username : "",
                 email !== user.email ? email : "",
                 password || "",
-                accountStatus !== user.account_status ? accountStatus : ""
+                accountStatus !== user.accountStatus ? accountStatus : ""
             );
 
             if (result) {
@@ -79,12 +79,12 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    {/* Users ID - Read only */}
+                    {/* User ID - Read only */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium">User ID</label>
                         <Input
                             type="number"
-                            value={user.user_id}
+                            value={user.id}
                             disabled
                             className="bg-muted"
                         />
@@ -101,7 +101,7 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
                             disabled={isUpdating || isLoading}
                         />
                         <p className="text-xs text-muted-foreground">
-                            Current: {user.user_name}
+                            Current: {user.userName}
                         </p>
                     </div>
 
@@ -147,14 +147,13 @@ const UpdateUserDialog = ({ open, onOpenChange, user }) => {
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="">Keep existing</SelectItem>
                                 <SelectItem value="ACTIVE">Active</SelectItem>
                                 <SelectItem value="SUSPENDED">Suspended</SelectItem>
                                 <SelectItem value="NONVERIFIED">Non-verified</SelectItem>
                             </SelectContent>
                         </Select>
                         <p className="text-xs text-muted-foreground">
-                            Current: {user.account_status}
+                            Current: {user.accountStatus}
                         </p>
                     </div>
                 </div>
