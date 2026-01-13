@@ -148,11 +148,8 @@ export function TransactionProvider({ children }) {
 
     // Change page size and calculate which page to show
     const changePageSize = useCallback((newSize) => {
-        // Calculate the first item's absolute index in the current view
         const currentFirstItemIndex = transactionData.currentPage * transactionData.pageSize;
-        // Calculate which page this item would be on with the new size
         const newPage = Math.floor(currentFirstItemIndex / newSize);
-        // Ensure the page is valid (0-based)
         const validPage = Math.max(0, newPage);
 
         transactionData.setPageSize(newSize);

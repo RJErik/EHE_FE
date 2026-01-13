@@ -26,7 +26,7 @@ const TransactionsList = () => {
         isLoading,
         error,
         lastUpdate,
-        currentPage, // 0-based internally
+        currentPage,
         totalPages,
         pageSize,
         goToPage,

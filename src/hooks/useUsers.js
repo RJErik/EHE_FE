@@ -1,5 +1,5 @@
 // src/hooks/useUsers.js
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useToast } from "./use-toast";
 import { useJwtRefresh } from "./useJwtRefresh";
 

@@ -1,4 +1,3 @@
-// src/components/AuthCheck.jsx
 import { useState, useEffect } from 'react';
 
 function AuthCheck({ children }) {

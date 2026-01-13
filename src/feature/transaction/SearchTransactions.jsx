@@ -11,7 +11,7 @@ import { Loader2, RefreshCw, ChevronDownIcon } from "lucide-react";
 
 const SearchTransactions = () => {
     const [isSearching, setIsSearching] = useState(false);
-    const [hasSearched, setHasSearched] = useState(false);
+    const [, setHasSearched] = useState(false);
 
     // Search parameters
     const [userId, setUserId] = useState("_any_");

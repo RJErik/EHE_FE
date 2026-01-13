@@ -10,8 +10,6 @@ const TransactionItemCard = ({ transaction }) => {
     const isBuy = transaction.type === "BUY";
     const isCompleted = transaction.status === "COMPLETED";
     const isPending = transaction.status === "PENDING";
-    const isFailed = transaction.status === "FAILED";
-
     const formatPrice = (price) => {
         return typeof price === 'number' ? `$${price.toFixed(2)}` : price;
     };
