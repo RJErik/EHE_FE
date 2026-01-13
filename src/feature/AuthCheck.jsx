@@ -10,7 +10,7 @@ function AuthCheck({ children }) {
         const verifyAuth = async () => {
             try {
                 // Call the verify endpoint that checks JWT token using fetch
-                const response = await fetch('http://localhost:8080/api/session', {
+                const response = await fetch('/api/session', {
                     method: 'GET',
                     credentials: 'include', // Include cookies in request
                     headers: {
@@ -26,7 +26,7 @@ function AuthCheck({ children }) {
             } catch (error) {
                 console.error('Authentication failed:', error);
                 // Redirect to login app
-                window.location.href = 'http://localhost:5173';
+                window.location.href = 'https://www.eventhorizonexchange.com';
             }
         };
 

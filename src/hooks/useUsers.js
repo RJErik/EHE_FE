@@ -19,7 +19,7 @@ export function useUsers() {
 
         try {
             console.log(`Fetching users... page=${page}, size=${size}`);
-            let response = await fetch(`http://localhost:8080/api/admin/users?page=${page}&size=${size}`, {
+            let response = await fetch(`/api/admin/users?page=${page}&size=${size}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
@@ -34,7 +34,7 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                response = await fetch(`http://localhost:8080/api/admin/users?page=${page}&size=${size}`, {
+                response = await fetch(`/api/admin/users?page=${page}&size=${size}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
@@ -90,7 +90,7 @@ export function useUsers() {
         try {
             console.log(`Searching users: userId=${userId} username=${username} email=${email} accountStatus=${accountStatus} from=${registrationDateFromTime} to=${registrationDateToTime} page=${page} size=${size}`);
 
-            let response = await fetch("http://localhost:8080/api/admin/users/search", {
+            let response = await fetch("/api/admin/users/search", {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -115,7 +115,7 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                response = await fetch("http://localhost:8080/api/admin/users/search", {
+                response = await fetch("/api/admin/users/search", {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -182,7 +182,7 @@ export function useUsers() {
         try {
             console.log(`Updating user: userId=${userId}`);
 
-            let response = await fetch(`http://localhost:8080/api/admin/users/${userId}`, {
+            let response = await fetch(`/api/admin/users/${userId}`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
@@ -203,7 +203,7 @@ export function useUsers() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                response = await fetch(`http://localhost:8080/api/admin/users/${userId}`, {
+                response = await fetch(`/api/admin/users/${userId}`, {
                     method: "PUT",
                     credentials: "include",
                     headers: {

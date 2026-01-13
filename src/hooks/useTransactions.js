@@ -18,7 +18,7 @@ export function useTransactions() {
 
         try {
             console.log(`Fetching transactions... page=${page}, size=${size}`);
-            let response = await fetch(`http://localhost:8080/api/admin/transactions?page=${page}&size=${size}`, {
+            let response = await fetch(`/api/admin/transactions?page=${page}&size=${size}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
@@ -33,7 +33,7 @@ export function useTransactions() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                response = await fetch(`http://localhost:8080/api/admin/transactions?page=${page}&size=${size}`, {
+                response = await fetch(`/api/admin/transactions?page=${page}&size=${size}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
@@ -104,7 +104,7 @@ export function useTransactions() {
             params.append("page", page);
             params.append("size", size);
 
-            let response = await fetch(`http://localhost:8080/api/admin/transactions/search?${params.toString()}`, {
+            let response = await fetch(`/api/admin/transactions/search?${params.toString()}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
@@ -119,7 +119,7 @@ export function useTransactions() {
                     throw new Error("Session expired. Please login again.");
                 }
 
-                response = await fetch(`http://localhost:8080/api/admin/transactions/search?${params.toString()}`, {
+                response = await fetch(`/api/admin/transactions/search?${params.toString()}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
